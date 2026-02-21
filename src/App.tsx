@@ -1,7 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider, useAuth } from './components/login/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/login/Login';
+import Dashboard from './components/dashboard/Dashboard';
+import Register from './components/register/Register';
+import ForgotPassword from './components/forgotpwd/ForgotPassword';
 
 // Component to protect routes that require authentication
 const RequireAuth = ({ children }: { children: React.ReactNode }) => {
@@ -17,26 +20,28 @@ const RequireAuth = ({ children }: { children: React.ReactNode }) => {
     return children;
 };
 
-const Home = () => {
-    const { user, logout } = useAuth();
-    return (
-        <div className="container mt-5 text-center">
-            <h1>Welcome, {user?.email}!</h1>
-            <p className="lead">You are now logged in.</p>
-            <button className="btn btn-danger" onClick={logout}>Logout</button>
-        </div>
-    );
-};
-
 const App: React.FC = () => {
+    React.useEffect(() => {
+        let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.head.appendChild(link);
+        }
+        link.href = 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>';
+    }, []);
+
     return (
         <AuthProvider>
             <Router>
                 <Routes>
                     <Route path="/login" element={<Login />} />
-                    <Route path="/" element={
-                        <RequireAuth><Home /></RequireAuth>
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/dashboard" element={
+                        <RequireAuth><Dashboard /></RequireAuth>
                     } />
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </Router>
         </AuthProvider>
