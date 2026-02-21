@@ -7,17 +7,32 @@ import './Login.css';
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useAuth();
+    const [error, setError] = useState('');
+    const { login, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
-    const from = location.state?.from?.pathname || "/";
+    const from = (location.state as any)?.from?.pathname || "/";
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (email && password) {
-            login({ email });
+        setError('');
+        try {
+            await login(email, password);
             navigate(from, { replace: true });
+        } catch (err) {
+            setError('Failed to login. Please check your credentials.');
+            console.error(err);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        try {
+            await loginWithGoogle();
+            navigate(from, { replace: true });
+        } catch (err) {
+            setError('Failed to login with Google.');
+            console.error(err);
         }
     };
 
@@ -26,9 +41,10 @@ const Login: React.FC = () => {
             <div className="container d-flex justify-content-center">
                 <div className="login-card">
                     <div className="login-header">
-                        <h2>Welcome Back</h2>
+                        <h2>Log in</h2>
                         <p className="text-muted">Please login to your account</p>
                     </div>
+                    {error && <div className="alert alert-danger">{error}</div>}
                     <form onSubmit={handleLogin}>
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">Email address</label>
@@ -65,6 +81,13 @@ const Login: React.FC = () => {
                         </div>
                         <button type="submit" className="btn btn-login">Login</button>
                     </form>
+                    <div className="text-center mt-3">
+                        <p className="text-muted mb-2">OR</p>
+                        <button type="button" className="btn btn-outline-dark w-100" onClick={handleGoogleLogin}>
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style={{ width: '18px', marginRight: '10px' }} />
+                            Login with Google
+                        </button>
+                    </div>
                     <div className="text-center mt-4">
                         <p className="small text-muted">Don't have an account? <a href="#" style={{ color: '#764ba2', textDecoration: 'none', fontWeight: 600 }}>Sign up</a></p>
                     </div>
