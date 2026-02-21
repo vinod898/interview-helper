@@ -2,15 +2,15 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCcy_0EeTEEiw3F9MWdPDaQtSRQG__b4p0",
-  authDomain: "eliteinterviewhelper.firebaseapp.com",
-  projectId: "eliteinterviewhelper",
-  storageBucket: "eliteinterviewhelper.firebasestorage.app",
-  messagingSenderId: "317368940983",
-  appId: "1:317368940983:web:3dc16c4d44cb0e2df45032",
-  measurementId: "G-6BB0N9YX57"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
-
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export default app;
