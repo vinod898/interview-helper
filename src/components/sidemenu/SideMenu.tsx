@@ -1,30 +1,37 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 
 const SideMenu: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems = [
     {
       label: 'Dashboard',
+      path: '/dashboard',
       icon: (
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8v-10h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/></svg>
       ),
     },
     {
       label: 'Profile',
+      path: '/profile',
       icon: (
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M12 12c2.7 0 8 1.34 8 4v4H4v-4c0-2.66 5.3-4 8-4zm0-2a4 4 0 100-8 4 4 0 000 8z" fill="currentColor"/></svg>
       ),
     },
     {
       label: 'Settings',
+      path: '/settings',
       icon: (
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-2a6 6 0 11-12 0 6 6 0 0112 0zm-6-8a2 2 0 100-4 2 2 0 000 4zm6-2a6 6 0 11-12 0 6 6 0 0112 0z" fill="currentColor"/></svg>
       ),
     },
     {
       label: 'Logout',
+      path: '/logout',
       icon: (
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M16 13v-1a4 4 0 00-8 0v1H4v7h16v-7h-4zm-6-1a2 2 0 014 0v1h-4v-1zm6 7H8v-5h8v5zm-2-14a2 2 0 100-4 2 2 0 000 4z" fill="currentColor"/></svg>
       ),
@@ -62,7 +69,12 @@ const SideMenu: React.FC = () => {
       <div className="pt-5 mt-4">
         <ul className="nav flex-column gap-2">
           {menuItems.map((item) => (
-            <li key={item.label} className="nav-item d-flex align-items-center gap-2 py-2 px-1 rounded nav-link text-white" style={{ fontWeight: 600, fontSize: '1.35rem' }}>
+            <li 
+              key={item.label} 
+              className={`nav-item d-flex align-items-center gap-2 py-2 px-1 rounded nav-link text-white ${location.pathname === item.path ? 'bg-white bg-opacity-25' : ''}`} 
+              style={{ fontWeight: 600, fontSize: '1.35rem', cursor: 'pointer' }}
+              onClick={() => item.path && navigate(item.path)}
+            >
               <span>{item.icon}</span>
               {!collapsed && item.label}
             </li>
