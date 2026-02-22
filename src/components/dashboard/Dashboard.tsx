@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
 import './Dashboard.css';
 import { useTopic } from '../../context/TopicContext';
@@ -15,7 +15,7 @@ function chunkArray<T>(arr: T[], size: number): T[][] {
 }
 
 const Dashboard: React.FC = () => {
-
+    const navigate = useNavigate();
     const { topics } = useTopic();
     const technologies = topics.reduce((acc: Topic[], topic) => {
         if (topic.childrens.length > 0) {
@@ -52,7 +52,12 @@ const Dashboard: React.FC = () => {
                             <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 400 }}>
                                 <div className="d-flex flex-row justify-content-center align-items-stretch w-100 gap-4">
                                     {chunk.map((tech) => (
-                                        <div key={tech.id} className="d-flex flex-column align-items-center justify-content-center p-4" style={{ background: 'linear-gradient(135deg, #fff 70%, #e9e4f0 100%)', borderRadius: 24, minWidth: 200, minHeight: 300, boxShadow: '0 4px 16px rgba(118, 75, 162, 0.10)' }}>
+                                        <div 
+                                            key={tech.id} 
+                                            className="d-flex flex-column align-items-center justify-content-center p-4" 
+                                            style={{ background: 'linear-gradient(135deg, #fff 70%, #e9e4f0 100%)', borderRadius: 24, minWidth: 200, minHeight: 300, boxShadow: '0 4px 16px rgba(118, 75, 162, 0.10)', cursor: 'pointer' }}
+                                            onClick={() => navigate(`/qa/${tech.id}`)}
+                                        >
                                             <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '50%', padding: 18, marginBottom: 18, boxShadow: '0 2px 8px #764ba233', width: 100, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 {tech.icon.startsWith('http') ? (
                                                     <img src={tech.icon} alt={tech.topicName} style={{ width: 64, height: 64, filter: 'drop-shadow(0 2px 8px #764ba244)' }} />

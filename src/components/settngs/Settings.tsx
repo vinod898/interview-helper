@@ -48,10 +48,7 @@ const TopicRow: React.FC<{ topic: Topic; selectedId: string | null; onSelect: (i
                         </div>
                     </div>
                 </td>
-                <td className="align-middle">
-                    <span className="badge bg-light text-dark border font-monospace">{topic.id}</span>
-                </td>
-            </tr>
+              </tr>
             {expanded && hasChildren && (
                 <tr>
                     <td colSpan={3} className="p-0 border-0">
@@ -204,7 +201,6 @@ const Settings: React.FC = () => {
                                 <tr>
                                     <th className="py-3 ps-4 text-uppercase text-muted small fw-bold" style={{ width: '60px' }}></th>
                                     <th className="py-3 text-uppercase text-muted small fw-bold">Topic Name</th>
-                                    <th className="py-3 text-uppercase text-muted small fw-bold">ID</th>
                                 </tr>
                             </thead>
                             <tbody>
