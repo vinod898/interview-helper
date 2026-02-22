@@ -5,6 +5,7 @@ import Login from './components/login/Login';
 import Dashboard from './components/dashboard/Dashboard';
 import Register from './components/register/Register';
 import ForgotPassword from './components/forgotpwd/ForgotPassword';
+import Layout from './components/layout/Layout';
 
 // Component to protect routes that require authentication
 const RequireAuth = ({ children }: { children: React.ReactNode }) => {
@@ -38,9 +39,9 @@ const App: React.FC = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/dashboard" element={
-                        <RequireAuth><Dashboard /></RequireAuth>
-                    } />
+                    <Route element={<RequireAuth><Layout /></RequireAuth>}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </Router>
