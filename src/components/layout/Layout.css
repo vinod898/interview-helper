@@ -1,0 +1,38 @@
+/* Overlay Header Styles */
+.dashboard-root {
+	position: relative;
+	width: 100vw;
+	min-height: 100vh;
+}
+
+.dashboard-header-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	z-index: 10;
+}
+
+.dashboard-flex {
+	display: flex;
+	width: 100vw;
+	min-height: 100vh;
+	background: #f5f6fa;
+	padding-top: 64px;
+}
+
+.dashboard-sidemenu {
+	min-width: 220px;
+	max-width: 260px;
+	display: flex;
+	align-items: flex-start;
+}
+
+.dashboard-content {
+	flex: 1;
+	padding: 40px 48px 40px 40px;
+	display: flex;
+	flex-direction: column;
+	max-height: 100vh;
+	min-width: 0;
+}

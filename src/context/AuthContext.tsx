@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, type ReactNode, useCallback, useMemo } from 'react';
-import { auth } from '../../firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { auth } from '../firebase';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 
 interface AuthContextType {
     user: User | null;
     login: (email: string, password: string) => Promise<void>;
+    register: (email: string, password: string) => Promise<void>;
     loginWithGoogle: () => Promise<void>;
     logout: () => Promise<void>;
     isAuthenticated: boolean;
@@ -29,6 +30,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         await signInWithEmailAndPassword(auth, email, password);
     }, []);
 
+    const register = useCallback(async (email: string, password: string) => {
+        await createUserWithEmailAndPassword(auth, email, password);
+    }, []);
+
     const loginWithGoogle = useCallback(async () => {
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
@@ -41,11 +46,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const value = useMemo(() => ({
         user,
         login,
+        register,
         loginWithGoogle,
         logout,
         isAuthenticated: !!user,
         loading
-    }), [user, login, loginWithGoogle, logout, loading]);
+    }), [user, login, register, loginWithGoogle, logout, loading]);
 
     return (
         <AuthContext.Provider value={value}>
