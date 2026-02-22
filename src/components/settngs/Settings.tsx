@@ -1,168 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { fetchTopics, saveTopics, type Topic } from '../../services/topicService';
+import React, { useState } from 'react';
+import { Modal, Button, Form, Dropdown } from 'react-bootstrap';
+import { type Topic } from '../../services/topicService';
+import { useTopic } from '../../context/TopicContext';
 
-const mockData: Topic[] = [
-  {
-    "id": "1",
-    "topicName": "Programming Languages",
-    "icon": "folder",
-    "childrens": [
-      {
-        "id": "1-1",
-        "topicName": "Java",
-        "icon": "folder",
-        "childrens": [
-          {
-            "id": "1-1-1",
-            "topicName": "Core Java",
-            "icon": "folder",
-            "childrens": [
-              { "id": "1-1-1-1", "topicName": "OOP Concepts", "icon": "file", "childrens": [] },
-              { "id": "1-1-1-2", "topicName": "Collections Framework", "icon": "file", "childrens": [] },
-              { "id": "1-1-1-3", "topicName": "Multithreading & Concurrency", "icon": "file", "childrens": [] },
-              { "id": "1-1-1-4", "topicName": "Exception Handling", "icon": "file", "childrens": [] },
-              { "id": "1-1-1-5", "topicName": "Java I/O & NIO", "icon": "file", "childrens": [] },
-              { "id": "1-1-1-6", "topicName": "Generics", "icon": "file", "childrens": [] },
-              { "id": "1-1-1-7", "topicName": "Serialization", "icon": "file", "childrens": [] }
-            ]
-          },
-          {
-            "id": "1-1-2",
-            "topicName": "Java 8+ Features",
-            "icon": "folder",
-            "childrens": [
-              { "id": "1-1-2-1", "topicName": "Lambda Expressions", "icon": "file", "childrens": [] },
-              { "id": "1-1-2-2", "topicName": "Stream API", "icon": "file", "childrens": [] },
-              { "id": "1-1-2-3", "topicName": "Optional Class", "icon": "file", "childrens": [] },
-              { "id": "1-1-2-4", "topicName": "Functional Interfaces", "icon": "file", "childrens": [] },
-              { "id": "1-1-2-5", "topicName": "Method References", "icon": "file", "childrens": [] },
-              { "id": "1-1-2-6", "topicName": "Default & Static Methods", "icon": "file", "childrens": [] }
-            ]
-          },
-          {
-            "id": "1-1-3",
-            "topicName": "JVM Internals",
-            "icon": "folder",
-            "childrens": [
-              { "id": "1-1-3-1", "topicName": "Memory Management (Heap/Stack)", "icon": "file", "childrens": [] },
-              { "id": "1-1-3-2", "topicName": "Garbage Collection (GC)", "icon": "file", "childrens": [] },
-              { "id": "1-1-3-3", "topicName": "Class Loading Subsystem", "icon": "file", "childrens": [] },
-              { "id": "1-1-3-4", "topicName": "JIT Compiler", "icon": "file", "childrens": [] },
-              { "id": "1-1-3-5", "topicName": "JVM Architecture", "icon": "file", "childrens": [] }
-            ]
-          },
-          {
-            "id": "1-1-4",
-            "topicName": "Advanced Java",
-            "icon": "folder",
-            "childrens": [
-              { "id": "1-1-4-1", "topicName": "Reflection API", "icon": "file", "childrens": [] },
-              { "id": "1-1-4-2", "topicName": "Annotations", "icon": "file", "childrens": [] },
-              { "id": "1-1-4-3", "topicName": "JDBC", "icon": "file", "childrens": [] },
-              { "id": "1-1-4-4", "topicName": "Networking (Sockets)", "icon": "file", "childrens": [] }
-            ]
-          },
-          {
-            "id": "1-1-5",
-            "topicName": "Design Patterns in Java",
-            "icon": "folder",
-            "childrens": [
-              { "id": "1-1-5-1", "topicName": "Singleton Pattern", "icon": "file", "childrens": [] },
-              { "id": "1-1-5-2", "topicName": "Factory Pattern", "icon": "file", "childrens": [] },
-              { "id": "1-1-5-3", "topicName": "Observer Pattern", "icon": "file", "childrens": [] },
-              { "id": "1-1-5-4", "topicName": "Builder Pattern", "icon": "file", "childrens": [] },
-              { "id": "1-1-5-5", "topicName": "Decorator Pattern", "icon": "file", "childrens": [] }
-            ]
-          }
-        ]
-      },
-      { "id": "1-2", "topicName": "Python", "icon": "file", "childrens": [] },
-      { "id": "1-3", "topicName": "JavaScript", "icon": "file", "childrens": [] },
-      { "id": "1-4", "topicName": "TypeScript", "icon": "file", "childrens": [] },
-      { "id": "1-5", "topicName": "C#", "icon": "file", "childrens": [] },
-      { "id": "1-6", "topicName": "C++", "icon": "file", "childrens": [] },
-      { "id": "1-7", "topicName": "Go", "icon": "file", "childrens": [] },
-      { "id": "1-8", "topicName": "Rust", "icon": "file", "childrens": [] },
-      { "id": "1-9", "topicName": "Kotlin", "icon": "file", "childrens": [] },
-      { "id": "1-10", "topicName": "Swift", "icon": "file", "childrens": [] }
-    ]
-  },
-  {
-    "id": "2",
-    "topicName": "Frontend",
-    "icon": "folder",
-    "childrens": [
-      { "id": "2-1", "topicName": "HTML", "icon": "file", "childrens": [] },
-      { "id": "2-2", "topicName": "CSS", "icon": "file", "childrens": [] },
-      { "id": "2-3", "topicName": "React", "icon": "file", "childrens": [] },
-      { "id": "2-4", "topicName": "Angular", "icon": "file", "childrens": [] },
-      { "id": "2-5", "topicName": "Vue", "icon": "file", "childrens": [] },
-      { "id": "2-6", "topicName": "Next.js", "icon": "file", "childrens": [] }
-    ]
-  },
-  {
-    "id": "3",
-    "topicName": "Backend",
-    "icon": "folder",
-    "childrens": [
-      { "id": "3-1", "topicName": "Node.js", "icon": "file", "childrens": [] },
-      { "id": "3-2", "topicName": "Spring Boot", "icon": "file", "childrens": [] },
-      { "id": "3-3", "topicName": "Django", "icon": "file", "childrens": [] },
-      { "id": "3-4", "topicName": ".NET Core", "icon": "file", "childrens": [] },
-      { "id": "3-5", "topicName": "Express.js", "icon": "file", "childrens": [] }
-    ]
-  },
-  {
-    "id": "4",
-    "topicName": "Databases",
-    "icon": "folder",
-    "childrens": [
-      { "id": "4-1", "topicName": "MySQL", "icon": "file", "childrens": [] },
-      { "id": "4-2", "topicName": "PostgreSQL", "icon": "file", "childrens": [] },
-      { "id": "4-3", "topicName": "MongoDB", "icon": "file", "childrens": [] },
-      { "id": "4-4", "topicName": "Oracle", "icon": "file", "childrens": [] },
-      { "id": "4-5", "topicName": "Redis", "icon": "file", "childrens": [] }
-    ]
-  },
-  {
-    "id": "5",
-    "topicName": "DevOps & Cloud",
-    "icon": "folder",
-    "childrens": [
-      { "id": "5-1", "topicName": "AWS", "icon": "file", "childrens": [] },
-      { "id": "5-2", "topicName": "Azure", "icon": "file", "childrens": [] },
-      { "id": "5-3", "topicName": "Google Cloud", "icon": "file", "childrens": [] },
-      { "id": "5-4", "topicName": "Docker", "icon": "file", "childrens": [] },
-      { "id": "5-5", "topicName": "Kubernetes", "icon": "file", "childrens": [] },
-      { "id": "5-6", "topicName": "CI/CD", "icon": "file", "childrens": [] }
-    ]
-  },
-  {
-    "id": "6",
-    "topicName": "Data & AI",
-    "icon": "folder",
-    "childrens": [
-      { "id": "6-1", "topicName": "Machine Learning", "icon": "file", "childrens": [] },
-      { "id": "6-2", "topicName": "Deep Learning", "icon": "file", "childrens": [] },
-      { "id": "6-3", "topicName": "Data Science", "icon": "file", "childrens": [] },
-      { "id": "6-4", "topicName": "TensorFlow", "icon": "file", "childrens": [] },
-      { "id": "6-5", "topicName": "PyTorch", "icon": "file", "childrens": [] }
-    ]
-  }
-];
+const findTopicById = (topics: Topic[], id: string): Topic | null => {
+    for (const topic of topics) {
+        if (topic.id === id) return topic;
+        if (topic.childrens.length > 0) {
+            const found = findTopicById(topic.childrens, id);
+            if (found) return found;
+        }
+    }
+    return null;
+};
 
-const TopicRow: React.FC<{ topic: Topic; onAdd: (parentId: string) => void }> = ({ topic, onAdd }) => {
+const TopicRow: React.FC<{ topic: Topic; selectedId: string | null; onSelect: (id: string) => void }> = ({ topic, selectedId, onSelect }) => {
     const [expanded, setExpanded] = useState(false);
     const hasChildren = topic.childrens && topic.childrens.length > 0;
+    const isSelected = selectedId === topic.id;
 
     return (
         <>
-            <tr className={expanded ? "table-active" : ""}>
+            <tr 
+                className={isSelected ? "table-active" : ""} 
+                onClick={() => onSelect(topic.id)}
+                style={{ cursor: 'pointer' }}
+            >
                 <td className="align-middle text-center" style={{ width: '60px' }}>
                     {hasChildren && (
                         <button 
                             className={`btn btn-sm ${expanded ? 'btn-primary' : 'btn-white border'} rounded-circle p-0 d-inline-flex align-items-center justify-content-center shadow-sm`}
-                            onClick={() => setExpanded(!expanded)}
+                            onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
                             style={{ width: '24px', height: '24px', transition: 'all 0.2s ease' }}
                         >
                             <span style={{ lineHeight: 1, fontSize: '14px' }}>{expanded ? '−' : '+'}</span>
@@ -183,20 +51,15 @@ const TopicRow: React.FC<{ topic: Topic; onAdd: (parentId: string) => void }> = 
                 <td className="align-middle">
                     <span className="badge bg-light text-dark border font-monospace">{topic.id}</span>
                 </td>
-                <td className="align-middle text-end pe-4">
-                    <button className="btn btn-sm btn-outline-primary rounded-pill px-3" onClick={() => onAdd(topic.id)}>
-                        + Add Subtopic
-                    </button>
-                </td>
             </tr>
             {expanded && hasChildren && (
                 <tr>
-                    <td colSpan={4} className="p-0 border-0">
+                    <td colSpan={3} className="p-0 border-0">
                         <div className="ps-5 py-2 bg-light border-bottom shadow-inner">
                             <table className="table table-hover mb-0 table-borderless bg-transparent">
                                 <tbody>
                                     {topic.childrens.map((child) => (
-                                        <TopicRow key={child.id} topic={child} onAdd={onAdd} />
+                                        <TopicRow key={child.id} topic={child} selectedId={selectedId} onSelect={onSelect} />
                                     ))}
                                 </tbody>
                             </table>
@@ -209,55 +72,100 @@ const TopicRow: React.FC<{ topic: Topic; onAdd: (parentId: string) => void }> = 
 };
 
 const Settings: React.FC = () => {
-    const [topics, setTopics] = useState<Topic[]>([]);
+    const { topics, updateTopics } = useTopic();
+    const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
+    const [topicName, setTopicName] = useState('');
+    const [topicIcon, setTopicIcon] = useState('');
+    const [targetParentId, setTargetParentId] = useState<string | null>(null);
 
-    useEffect(() => {
-        const loadTopics = async () => {
-            const data = await fetchTopics();
-            console.log("Fetched topics:", data);
-            if (data && data.length > 0) {
-                setTopics(data);
+    const handleShowAdd = (parentId: string | null) => {
+        setModalMode('add');
+        setTargetParentId(parentId);
+        setTopicName('');
+        setTopicIcon('file');
+        setShowModal(true);
+    };
+
+    const handleShowEdit = () => {
+        if (!selectedTopicId) return;
+        const topic = findTopicById(topics, selectedTopicId);
+        if (topic) {
+            setModalMode('edit');
+            setTopicName(topic.topicName);
+            setTopicIcon(topic.icon);
+            setShowModal(true);
+        }
+    };
+
+    const handleSave = async () => {
+        if (!topicName) return;
+
+        let newTopics = [...topics];
+
+        if (modalMode === 'add') {
+            const newTopic: Topic = {
+                id: Date.now().toString(),
+                topicName: topicName,
+                icon: topicIcon || 'file',
+                parentId: targetParentId,
+                childrens: []
+            };
+
+            if (targetParentId === null) {
+                newTopics.push(newTopic);
             } else {
-                setTopics(mockData);
+                const addNode = (nodes: Topic[]): Topic[] => {
+                    return nodes.map(node => {
+                        if (node.id === targetParentId) {
+                            return { ...node, childrens: [...node.childrens, newTopic], icon: 'folder' };
+                        }
+                        return { ...node, childrens: addNode(node.childrens) };
+                    });
+                };
+                newTopics = addNode(newTopics);
             }
-        };
-        loadTopics();
-    }, []);
-
-    const handleAddTopic = async (parentId: string | null) => {
-        const name = window.prompt("Enter topic name:");
-        if (!name) return;
-
-        const newTopic: Topic = {
-            id: Date.now().toString(),
-            topicName: name,
-            icon: 'file',
-            childrens: []
-        };
-
-        let newTopics: Topic[] = [];
-        if (parentId === null) {
-            newTopics = [...topics, newTopic];
         } else {
-            const addNode = (nodes: Topic[]): Topic[] => {
+            const editNode = (nodes: Topic[]): Topic[] => {
                 return nodes.map(node => {
-                    if (node.id === parentId) {
-                        return { ...node, childrens: [...node.childrens, newTopic], icon: 'folder' };
+                    if (node.id === selectedTopicId) {
+                        return { ...node, topicName: topicName, icon: topicIcon };
                     }
-                    return { ...node, childrens: addNode(node.childrens) };
+                    return { ...node, childrens: editNode(node.childrens) };
                 });
             };
-            newTopics = addNode(topics);
+            newTopics = editNode(newTopics);
         }
         
-        const previousTopics = topics;
-        setTopics(newTopics);
         try {
-            await saveTopics(newTopics);
+            await updateTopics(newTopics);
+            setShowModal(false);
         } catch (error) {
             console.error("Failed to save topics:", error);
-            setTopics(previousTopics);
-            alert("Failed to save topic. Missing or insufficient permissions.");
+            alert("Failed to save topic.");
+        }
+    };
+
+    const handleDeleteTopic = async () => {
+        if (!selectedTopicId) return;
+        if (!window.confirm("Are you sure you want to delete this topic?")) return;
+
+        const deleteNode = (nodes: Topic[]): Topic[] => {
+            return nodes.filter(node => node.id !== selectedTopicId).map(node => ({
+                ...node,
+                childrens: deleteNode(node.childrens)
+            }));
+        };
+
+        const newTopics = deleteNode(topics);
+        setSelectedTopicId(null);
+
+        try {
+            await updateTopics(newTopics);
+        } catch (error) {
+            console.error("Failed to save topics:", error);
+            alert("Failed to save topic.");
         }
     };
 
@@ -268,9 +176,18 @@ const Settings: React.FC = () => {
                     <h2 className="fw-bold text-primary mb-1">Settings</h2>
                     <p className="text-muted mb-0">Manage your interview topics and preferences</p>
                 </div>
-                <button className="btn btn-primary shadow-sm" onClick={() => handleAddTopic(null)}>
-                    <span className="me-2">+</span> Add New Topic
-                </button>
+                <Dropdown>
+                    <Dropdown.Toggle variant="primary" id="dropdown-actions" className="shadow-sm">
+                        Actions
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu align="end">
+                        <Dropdown.Item onClick={() => handleShowAdd(null)}>+ Add Root Topic</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleShowAdd(selectedTopicId)} disabled={!selectedTopicId}>+ Add Subtopic</Dropdown.Item>
+                        <Dropdown.Item onClick={handleShowEdit} disabled={!selectedTopicId}>Edit</Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item onClick={handleDeleteTopic} disabled={!selectedTopicId} className="text-danger">Delete</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
             </div>
             
             <div className="card shadow border-0 rounded-3 overflow-hidden">
@@ -288,12 +205,11 @@ const Settings: React.FC = () => {
                                     <th className="py-3 ps-4 text-uppercase text-muted small fw-bold" style={{ width: '60px' }}></th>
                                     <th className="py-3 text-uppercase text-muted small fw-bold">Topic Name</th>
                                     <th className="py-3 text-uppercase text-muted small fw-bold">ID</th>
-                                    <th className="py-3 text-uppercase text-muted small fw-bold text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {topics.map((topic) => (
-                                    <TopicRow key={topic.id} topic={topic} onAdd={handleAddTopic} />
+                                    <TopicRow key={topic.id} topic={topic} selectedId={selectedTopicId} onSelect={setSelectedTopicId} />
                                 ))}
                             </tbody>
                         </table>
@@ -303,6 +219,28 @@ const Settings: React.FC = () => {
                     <small className="text-muted">Showing all topics</small>
                 </div>
             </div>
+
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{modalMode === 'add' ? 'Add Topic' : 'Edit Topic'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Topic Name</Form.Label>
+                            <Form.Control type="text" placeholder="Enter topic name" value={topicName} onChange={(e) => setTopicName(e.target.value)} autoFocus />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Icon URL (or 'file'/'folder')</Form.Label>
+                            <Form.Control type="text" placeholder="Enter icon URL" value={topicIcon} onChange={(e) => setTopicIcon(e.target.value)} />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+                    <Button variant="primary" onClick={handleSave}>Save Changes</Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

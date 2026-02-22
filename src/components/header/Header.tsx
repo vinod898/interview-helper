@@ -14,7 +14,6 @@ const Header: React.FC = () => {
         setImageError(false);
     }, [user?.photoURL]);
 
-    console.log("User in Header:", user.photoURL);
     const handleLogout = async () => {
         try {
             await logout();
