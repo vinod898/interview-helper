@@ -1,0 +1,127 @@
+.qa-page-container {
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
+
+.qa-sidebar-col {
+    height: 100%;
+    overflow-y: auto;
+    background-color: #fff;
+    border-right: 1px solid #dee2e6;
+}
+
+.qa-main-col {
+    height: 100%;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+}
+
+.topic-tree-item {
+    cursor: pointer;
+    padding: 10px 15px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: #495057;
+    display: flex;
+    align-items: center;
+}
+
+.topic-tree-item:hover {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+.topic-tree-item.selected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 6px rgba(118, 75, 162, 0.25);
+}
+
+.topic-toggle-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+    border-radius: 50%;
+}
+
+.topic-toggle-icon:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.question-card {
+    background: white;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(118, 75, 162, 0.1);
+}
+
+.question-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.question-title {
+    margin: 0;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1.05rem;
+}
+
+.question-card.expanded .question-title {
+    color: #764ba2;
+}
+
+.question-body {
+    padding: 0 20px 20px 20px;
+    color: #4a5568;
+    line-height: 1.6;
+    border-top: 1px solid #f1f1f1;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fab-btn {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 60px;
+    height: 60px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(118, 75, 162, 0.4);
+    z-index: 1000;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    transition: transform 0.2s;
+}
+
+.fab-btn:hover {
+    transform: scale(1.1);
+    color: white;
+}

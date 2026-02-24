@@ -7,6 +7,8 @@ import Register from './components/register/Register';
 import ForgotPassword from './components/forgotpwd/ForgotPassword';
 import Layout from './components/layout/Layout';
 import Settings from './components/settngs/Settings';
+import { TopicProvider } from './context/TopicContext';
+import QAPage from './components/question-answer/qa';
 
 // Component to protect routes that require authentication
 const RequireAuth = ({ children }: { children: React.ReactNode }) => {
@@ -35,6 +37,7 @@ const App: React.FC = () => {
 
     return (
         <AuthProvider>
+            <TopicProvider>
             <Router>
                 <Routes>
                     <Route path="/login" element={<Login />} />
@@ -43,10 +46,12 @@ const App: React.FC = () => {
                     <Route element={<RequireAuth><Layout /></RequireAuth>}>
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/qa/:topicId" element={<QAPage />} />
                     </Route>
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </Router>
+            </TopicProvider>
         </AuthProvider>
     );
 };
